@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import rishabh.demo2.domain.Books;
 import rishabh.demo2.service.BookService;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -32,7 +34,10 @@ public class BookController {
    @RequestMapping(value = "/books/getAll", method = RequestMethod.GET)
    @ResponseStatus(HttpStatus.OK)
    @ResponseBody
-   public ResponseEntity<List<Books>> getAllBooks() {
+   public ResponseEntity<List<Books>> getAllBooks(HttpServletRequest request) {
+       String acceptLanguage = request.getHeader("accept-language");
+       String ipAddress = request.getHeader("x-forwarded-for");
+        System.out.println(acceptLanguage+"  "+ ipAddress);
             List<Books> returnListBooks = bookService.findAll();
             if(returnListBooks != null){
                 return new ResponseEntity<>(returnListBooks, HttpStatus.OK);

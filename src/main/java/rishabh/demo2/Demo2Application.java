@@ -15,19 +15,19 @@ public class Demo2Application {
 		SpringApplication.run(Demo2Application.class, args);
 	}
 
-	public void run(String... args) throws Exception{
-		System.out.println("Customers found with findAll():");
-		repository.deleteAll();
-
-		repository.save(new Books("rishabh", "A"));
-		repository.save(new Books("Aarushi", "B"));
-
-		// fetch all books
-		System.out.println("Customers found with findAll():");
-		System.out.println("-------------------------------");
-		for (Books customer : repository.findAll()) {
-			System.out.println(customer);
-		}
-		System.out.println();
-	}
+//	public void run(String... args) throws Exception{
+//		System.out.println("Customers found with findAll():");
+//		repository.deleteAll();
+//
+//		repository.save(new Books("rishabh", "A"));
+//		repository.save(new Books("Aarushi", "B"));
+//
+//		// fetch all books
+//		System.out.println("Customers found with findAll():");
+//		System.out.println("-------------------------------");
+//		for (Books customer : repository.findAll()) {
+//			System.out.println(customer);
+//		}
+//		System.out.println();
+//	}
 }
