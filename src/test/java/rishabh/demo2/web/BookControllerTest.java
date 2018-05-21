@@ -65,8 +65,8 @@ public class BookControllerTest {
     public void testGetAllBooks() throws Exception {
         when(bookService.findAll()).thenReturn(books);
         mockMvc.perform(get("/books/getAll"))
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$[0].name").value("First"))
-//                .andExpect(jsonPath("$[0].name").value("A"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("First"))
+                .andExpect(jsonPath("$[0].author").value("A"));
     }
 }
