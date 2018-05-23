@@ -22,11 +22,13 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity<Books> getBooksDetailsByName(@PathVariable(value = "bookName") String bookName){
-        try{
-            Books resultBooks = bookService.findBookByName(bookName);
+        Books resultBooks = bookService.findBookByName(bookName);
+        System.out.println(resultBooks);
+        if(resultBooks != null){
             return new ResponseEntity<>(resultBooks,HttpStatus.OK);
         }
-        catch(Exception e){
+        else {
+            System.out.println("Hello");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -35,9 +37,6 @@ public class BookController {
    @ResponseStatus(HttpStatus.OK)
    @ResponseBody
    public ResponseEntity<List<Books>> getAllBooks(HttpServletRequest request) {
-       String acceptLanguage = request.getHeader("accept-language");
-       String ipAddress = request.getHeader("x-forwarded-for");
-        System.out.println(acceptLanguage+"  "+ ipAddress);
             List<Books> returnListBooks = bookService.findAll();
             if(returnListBooks != null){
                 return new ResponseEntity<>(returnListBooks, HttpStatus.OK);

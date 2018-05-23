@@ -61,8 +61,8 @@ public class BookControllerTest {
     @Test
     public void testGetBookDetailsException() throws Exception {
         String bookName = "First";
-        when(bookService.findBookByName(bookName)).thenReturn(null);
-        mockMvc.perform(get("books/getDetails/{bookName}", bookName))
+        when(bookService.findBookByName(any())).thenReturn(null);
+        mockMvc.perform(get("/books/getDetails/{bookName}", bookName))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
