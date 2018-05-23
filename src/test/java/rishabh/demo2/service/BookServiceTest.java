@@ -1,4 +1,4 @@
-package rishabh.demo2;
+package rishabh.demo2.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -6,9 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.context.request.RequestAttributes;
-import rishabh.demo2.doa.BooksRepository;
+import rishabh.demo2.doa.BooksDAO;
 import rishabh.demo2.domain.Books;
-import rishabh.demo2.service.BookService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.when;
 public class BookServiceTest {
 
     @Mock
-    private BooksRepository booksRepository;
+    private BooksDAO booksRepository;
 
     @Mock
     private RequestAttributes requestAttributes;
@@ -33,7 +32,7 @@ public class BookServiceTest {
         List<Books> booksList = getBooksList();
         when(booksRepository.findAll()).thenReturn(booksList);
         assertEquals("First", booksList.get(0).getName());
-        assertEquals("A",booksList.get(0).getName());
+        assertEquals("A",booksList.get(0).getAuthor());
         assertEquals("Second",booksList.get(1).getName());
         assertEquals("B",getBooksList().get(1).getAuthor());
     }
@@ -41,10 +40,22 @@ public class BookServiceTest {
 
     @Test
     public void testfindByName() throws Exception{
-
+        Books book = getBook();
+        String bookName = "ris";
+        when(booksRepository.findByName(bookName)).thenReturn(book);
+        assertEquals("ris",book.getName());
     }
+
+//    @Test
+//    public void testAddBook() throws Exception{
+//        Books book = getBook();
+//
+//    }
     private Books getBook(){
         Books book = new Books("ris", "A");
+        book.setGenres("crime");
+        book.setPage(100);
+        book.setPrice(10.85);
         return book;
     }
 

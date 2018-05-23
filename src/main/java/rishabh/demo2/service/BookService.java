@@ -1,27 +1,22 @@
 package rishabh.demo2.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rishabh.demo2.doa.BooksRepository;
 import rishabh.demo2.domain.Books;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class BookService {
+public interface BookService {
 
-    @Autowired
-    private BooksRepository repository;
+    List<Books> findAll();
 
-    public Books findBookByName(String bookName) {
-        return null;
-    }
+    List<Books> addBooks(Map<String, String> books);
 
-    public List<Books> findAll(){
-        return repository.findAll();
-    }
+    List<Books> findBooksByAuthor(String author);
 
-    public Books addBook(Books book){
-        return repository.save(book);
-    }
+    Books addBook(Books book);
+
+    Books findBookByName(String name);
+
 }

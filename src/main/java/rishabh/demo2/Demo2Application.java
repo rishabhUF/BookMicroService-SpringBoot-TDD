@@ -3,14 +3,13 @@ package rishabh.demo2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import rishabh.demo2.doa.BooksRepository;
-import rishabh.demo2.domain.Books;
+import rishabh.demo2.doa.BooksDAO;
 
 @SpringBootApplication
 public class Demo2Application {
 
 	@Autowired
-	BooksRepository repository;
+    BooksDAO repository;
 	public static void main(String[] args) {
 		SpringApplication.run(Demo2Application.class, args);
 	}
