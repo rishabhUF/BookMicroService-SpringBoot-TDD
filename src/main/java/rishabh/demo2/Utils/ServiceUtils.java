@@ -7,6 +7,8 @@ public class ServiceUtils {
 
     public String normalizeAuthorName(String author)
     {
+        if(author == null || author.length() == 0)
+            return null;
         String authorName = StringUtils.normalizeSpace(author);
         return isSingleWord(author) ? authorName : splitOnFirstAndLastName(authorName);
     }

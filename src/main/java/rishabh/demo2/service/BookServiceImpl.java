@@ -2,6 +2,7 @@ package rishabh.demo2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import rishabh.demo2.Utils.ServiceUtils;
 import rishabh.demo2.doa.BooksDAO;
 import rishabh.demo2.domain.Books;
@@ -20,11 +21,11 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BooksDAO booksDAO;
 
-    private ServiceUtils utils;
+    private ServiceUtils utils = new ServiceUtils();
 
     @Override
     public Books findBookByName(String bookName) {
-        return null;
+        return booksDAO.findByName(bookName);
     }
 
     @Override
@@ -42,8 +43,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Books> findBooksByAuthor(String author) {
-       String normalizedAuthor = utils.normalizeAuthorName(author);
-       return cache.computeIfAbsent(normalizedAuthor,booksDAO::findByAuthor);
+        if(author == null || author.length() == 0) {
+            return null;
+        }
+        else{
+            String normalizedAuthor = utils.normalizeAuthorName(author);
+            return cache.computeIfAbsent(normalizedAuthor, booksDAO::findByAuthor);
+        }
     }
 
     @Override
