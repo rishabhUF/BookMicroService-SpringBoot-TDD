@@ -18,6 +18,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -55,7 +57,7 @@ public class BookControllerTest {
                 .andDo(print())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("author").value("A"));
-
+        verify(bookService,times(1)).findBookByName(bookName);
     }
 
     @Test
@@ -65,6 +67,7 @@ public class BookControllerTest {
         mockMvc.perform(get("/books/getDetails/{bookName}", bookName))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+        verify(bookService,times(1)).findBookByName(bookName);
     }
 
     @Test
@@ -75,6 +78,7 @@ public class BookControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$[0].name").value("First"))
                 .andExpect(jsonPath("$[0].author").value("A"));
+        verify(bookService,times(1)).findAll();
     }
 
     @Test
@@ -82,6 +86,7 @@ public class BookControllerTest {
         when(bookService.findAll()).thenReturn(null);
         mockMvc.perform(get("/books/getAll"))
                 .andExpect(status().isNotFound());
+        verify(bookService,times(1)).findAll();
     }
 
     @Test
@@ -98,6 +103,7 @@ public class BookControllerTest {
         when(bookService.addBook(any())).thenReturn(book);
         mockMvc.perform(post("/books/add").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
                 .andExpect(status().isCreated()).andDo(print());
+        verify(bookService,times(1)).addBook(any());
     }
 
     private Books setBooks(){
