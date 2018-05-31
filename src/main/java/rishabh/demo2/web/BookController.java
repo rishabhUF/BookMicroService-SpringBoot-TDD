@@ -24,12 +24,16 @@ public class BookController {
     public ResponseEntity<Books> getBooksDetailsByName(@PathVariable(value = "bookName") String bookName){
         Books resultBooks = bookService.findBookByName(bookName);
         System.out.println(resultBooks);
-        if(resultBooks != null){
-            return new ResponseEntity<>(resultBooks,HttpStatus.OK);
+        try{
+            if(resultBooks != null){
+                return new ResponseEntity<>(resultBooks,HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
-        else {
-            System.out.println("Hello");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

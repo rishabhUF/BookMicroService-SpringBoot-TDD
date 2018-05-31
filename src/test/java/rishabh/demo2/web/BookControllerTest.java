@@ -1,11 +1,13 @@
 package rishabh.demo2.web;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -18,6 +20,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +52,29 @@ public class BookControllerTest {
     }
 
     @Test
+    public void getBookDetails_shouldReturnOk() throws Exception {
+        String bookName = "First";
+        when(bookService.findBookByName(any(String.class))).thenReturn(new Books(bookName,"A"));
+        ResponseEntity<Books> result = bookController.getBooksDetailsByName(bookName);
+        Assert.assertTrue(result.getStatusCode().is2xxSuccessful());
+    }
+
+    @Test(expected = Exception.class)
+    public void getBookDetails_shouldReturn500() throws Exception {
+        String bookName = "First";
+        when(bookService.findBookByName(any(String.class))).thenThrow(new Exception());
+        ResponseEntity<Books> responseEntity = bookController.getBooksDetailsByName(bookName);
+        Assert.assertTrue(responseEntity.getStatusCode().is5xxServerError());
+    }
+
+    @Test
+    public void getBookDetails_shouldReturnAuthor() throws Exception {
+        String bookName = "First";
+        when(bookService.findBookByName(anyString())).thenReturn(new Books(bookName,"A"));
+        ResponseEntity<Books> responseEntity = bookController.getBooksDetailsByName(bookName);
+        Assert.assertEquals(responseEntity.getBody().getAuthor(), "A");
+    }
+    @Test
     public void testGetBookDetails() throws Exception {
         String bookName = "First";
         when(bookService.findBookByName(bookName)).thenReturn(new Books(bookName,"A"));
@@ -58,6 +84,7 @@ public class BookControllerTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("author").value("A"));
         verify(bookService,times(1)).findBookByName(bookName);
+
     }
 
     @Test
