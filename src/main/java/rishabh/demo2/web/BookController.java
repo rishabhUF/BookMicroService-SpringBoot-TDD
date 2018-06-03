@@ -22,19 +22,19 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity<Books> getBooksDetailsByName(@PathVariable(value = "bookName") String bookName){
-        Books resultBooks = bookService.findBookByName(bookName);
-        System.out.println(resultBooks);
-        try{
-            if(resultBooks != null){
-                return new ResponseEntity<>(resultBooks,HttpStatus.OK);
-            }
-            else {
+
+        try {
+            Books resultBooks = bookService.findBookByName(bookName);
+//            System.out.println(resultBooks);
+            if (resultBooks != null) {
+                return new ResponseEntity<>(resultBooks, HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
         catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                throw new RuntimeException();
+            }
     }
 
    @RequestMapping(value = "/books/getAll", method = RequestMethod.GET)
@@ -53,7 +53,13 @@ public class BookController {
     @RequestMapping(value = "/books/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public Books addBook(@RequestBody Books book){
-        return bookService.addBook(book);
+    public ResponseEntity<Books> addBook(@RequestBody Books book) throws Exception{
+       try{
+           Books resultBooks = bookService.addBook(book);
+           return new ResponseEntity<>(resultBooks,HttpStatus.OK);
+       }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

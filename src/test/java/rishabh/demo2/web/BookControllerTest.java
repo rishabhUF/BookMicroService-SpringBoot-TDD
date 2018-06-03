@@ -6,11 +6,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.exceptions.base.MockitoException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.request.RequestAttributes;
 import rishabh.demo2.domain.Books;
 import rishabh.demo2.service.BookService;
 
@@ -21,9 +23,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,6 +41,9 @@ public class BookControllerTest {
 
     @Mock
     private BookService bookService;
+
+    @Mock
+    RequestAttributes requestAttributes;
 
     private List<Books> books = asList(new Books("First","A"), new Books("Second","B"));
 
@@ -62,9 +65,13 @@ public class BookControllerTest {
     @Test(expected = Exception.class)
     public void getBookDetails_shouldReturn500() throws Exception {
         String bookName = "First";
-        when(bookService.findBookByName(any(String.class))).thenThrow(new Exception());
+        //System.out.println("hello1");
+        when(bookService.findBookByName(any())).thenThrow(new Exception());
+        //System.out.println("hello2");
         ResponseEntity<Books> responseEntity = bookController.getBooksDetailsByName(bookName);
-        Assert.assertTrue(responseEntity.getStatusCode().is5xxServerError());
+        //System.out.println("hello3");
+        Assert.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+        //System.out.println("hello4");
     }
 
     @Test
@@ -116,6 +123,34 @@ public class BookControllerTest {
         verify(bookService,times(1)).findAll();
     }
 
+    @Test
+    public void addBook_shouldReturnOK() throws Exception {
+        Books book = setBooks();
+        when(bookService.addBook(book)).thenReturn(book);
+        ResponseEntity<Books> responseEntity = bookController.addBook(book);
+        Assert.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+    }
+
+    @Test(expected = Exception.class)
+    public void addBook_shouldReturn500() throws Exception {
+//        doThrow(new RuntimeException("User Data is not there")).when(bookService).addBook(setBooks());
+//       // when(bookService.addBook(any())).thenThrow(new Exception());
+//        ResponseEntity<Books> responseEntity = bookController.addBook(setBooks());
+//        Assert.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+
+        when(requestAttributes.getAttribute("book", RequestAttributes.SCOPE_REQUEST)).thenThrow(new Exception());
+        when(bookService.addBook(any())).thenReturn(setBooks());
+        ResponseEntity<Books> responseEntity = bookController.addBook(setBooks());
+        Assert.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+    }
+
+    @Test(expected = Exception.class)
+    public void addBook_shouldReturn500Exce() throws Exception{
+        when(bookService.addBook(setBooks())).thenThrow(new Exception());
+        mockMvc.perform(post("/books/add").contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
     @Test
     public void testAddBook() throws Exception{
         Books book = setBooks();
